@@ -5,12 +5,33 @@
 
 namespace Drawing
 {
-    // TODO - add a circle to Shape hierarchy
-
-    class Circle
+    class Circle : public ShapeBase
     {
+        int radius_;
+
     public:
-        Circle();
+        static constexpr auto id = "Circle";
+
+        Circle(int x = 0, int y = 0, int r = 0)
+            : ShapeBase{x, y}
+            , radius_{r}
+        {
+        }
+
+        void draw() const override
+        {
+            std::cout << "Drawing circle at " << coord() << " with radius: " << radius_ << std::endl;
+        }
+
+        int radius() const
+        {
+            return radius_;
+        }
+
+        void set_radius(int r)
+        {
+            radius_ = r;
+        }
     };
 }
 

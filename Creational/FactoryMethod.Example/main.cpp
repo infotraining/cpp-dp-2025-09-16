@@ -128,8 +128,8 @@ public:
 int main()
 {
     ShapeFactory shape_factory;
-    shape_factory.register_creator(Rectangle::id, [] { return std::make_unique<Rectangle>(); });
-    shape_factory.register_creator(Square::id, [] { return std::make_unique<Square>(); });
+    
+    
 
     ShapeRWFactory shape_rw_factory;
     shape_rw_factory.register_creator(make_type_index<Rectangle>(), [] { return std::make_unique<RectangleReaderWriter>();});
