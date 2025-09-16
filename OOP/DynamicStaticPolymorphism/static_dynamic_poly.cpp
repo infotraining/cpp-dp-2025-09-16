@@ -70,13 +70,23 @@ namespace DynamicPolymorphism
 
         void log(const std::string& data)
         {
-            std::cout << "LOG: " << formatter_->format(data) << '\n';
+            std::cout << "LOG: " << formatter_->format(data) << '\n'; // late binding
+        }
+
+        void set_formatter(std::unique_ptr<Formatter> fmt)
+        {
+            formatter_ = std::move(fmt);
         }
     };
 } // namespace DynamicPolymorphism
 
 namespace StaticPolymorphism
 {
+    template <typename T>
+    concept Formatter = requires(T obj, const std::string& text) {
+        { obj.format(text) } -> std::same_as<std::string>;
+    };
+
     struct UpperCaseFormatter
     {
         std::string format(const std::string& message) const
@@ -98,7 +108,15 @@ namespace StaticPolymorphism
         }
     };
 
-    template <typename TFormatter = UpperCaseFormatter>
+    struct EvilFormatter
+    {
+        std::string format(const std::string& str)
+        {
+            return "Evil";
+        }
+    };
+
+    template <Formatter TFormatter = UpperCaseFormatter>
     class Logger
     {
         TFormatter formatter_;
@@ -130,6 +148,11 @@ void dynamic_polymorphism()
 
     logger = Logger{std::make_unique<CapitalizeFormatter>()};
     logger.log("Hello, World!");
+
+    auto fmt_upper_case = std::make_unique<UpperCaseFormatter>();
+    logger.set_formatter(std::move(fmt_upper_case));
+    logger.set_formatter(std::make_unique<CapitalizeFormatter>());
+    logger.log("After formatter reset");
 }
 
 void static_polymorphism()
@@ -141,6 +164,14 @@ void static_polymorphism()
 
     Logger<CapitalizeFormatter> logger2;
     logger2.log("hello, world!");
+
+    Logger<EvilFormatter> logger3;
+    logger3.log("using evil formatter");
+}
+
+void duck_typing()
+{
+    // ???
 }
 
 int main()
@@ -152,4 +183,6 @@ int main()
     static_polymorphism();
 
     std::cout << "\n\n";
+
+    duck_typing();
 }

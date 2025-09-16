@@ -3,6 +3,7 @@
 ## Dokumentacja + slajdy
 
 * https://infotraining.bitbucket.io/cpp-dp
+* https://cpp-dp.infotraining.pl/ - wersja robocza
 
 ## Konfiguracja środowiska
 
