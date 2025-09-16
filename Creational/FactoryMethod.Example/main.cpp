@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <functional>
 
 #include "rectangle.hpp"
 #include "shape.hpp"
@@ -14,15 +15,33 @@ using namespace std;
 using namespace Drawing;
 using namespace Drawing::IO;
 
-unique_ptr<Shape> create_shape(const string& id)
-{
-    if (id == Rectangle::id)
-        return make_unique<Rectangle>();
-    else if (id == Square::id)
-        return make_unique<Square>();
+// unique_ptr<Shape> create_shape(const string& id)
+// {
+//     if (id == Rectangle::id)
+//         return make_unique<Rectangle>();
+//     else if (id == Square::id)
+//         return make_unique<Square>();
 
-    throw runtime_error("Unknown shape id");
-}
+//     throw runtime_error("Unknown shape id");
+// }
+
+using ShapeCreator = std::function<std::unique_ptr<Shape>()>;
+
+class ShapeFactory
+{
+    std::unordered_map<std::string, ShapeCreator> creators_;
+public:
+    bool register_creator(const std::string& id, ShapeCreator creator)
+    {
+        return creators_.emplace(id, creator).second;
+    }
+
+    std::unique_ptr<Shape> create(const std::string& id)
+    {
+        auto& creator = creators_.at(id);
+        return creator();
+    }
+};
 
 unique_ptr<ShapeReaderWriter> create_shape_rw(Shape& shape)
 {
@@ -36,9 +55,13 @@ unique_ptr<ShapeReaderWriter> create_shape_rw(Shape& shape)
 
 class GraphicsDoc
 {
+    ShapeFactory& shape_factory_;
     vector<unique_ptr<Shape>> shapes_;
 
 public:
+    GraphicsDoc(ShapeFactory& sf) : shape_factory_{sf}
+    {}
+
     void add(unique_ptr<Shape> shp)
     {
         shapes_.push_back(std::move(shp));
@@ -70,7 +93,7 @@ public:
 
             cout << "Loading " << shape_id << "..." << endl;
 
-            auto shape = create_shape(shape_id);
+            auto shape = shape_factory_.create(shape_id);
             auto shape_rw = create_shape_rw(*shape);
 
             shape_rw->read(*shape, file_in);
@@ -93,9 +116,13 @@ public:
 
 int main()
 {
+    ShapeFactory shape_factory;
+    shape_factory.register_creator(Rectangle::id, [] { return std::make_unique<Rectangle>(); });
+    shape_factory.register_creator(Square::id, [] { return std::make_unique<Square>(); });
+
     cout << "Start..." << endl;
 
-    GraphicsDoc doc;
+    GraphicsDoc doc{shape_factory};
 
     doc.load("drawing_fm_example.txt");
 

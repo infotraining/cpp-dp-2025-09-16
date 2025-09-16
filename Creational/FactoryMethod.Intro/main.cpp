@@ -109,15 +109,48 @@ namespace ModernCpp
         }
     };
 
+    // parametrized factory
     using MusicServiceFactory = std::unordered_map<std::string, MusicServiceCreator>;
 }
 
-// parametrized factory
+// interface Iterator
+// {
+//     void next();
+//     Object current();
+//     bool is_done();
+// };
+
+// inteface Container
+// {
+//     Iterator create_interator();
+// };
+
+// Iterator it = container.create_iterator();
+// while (!it.is_done())
+// {
+//     Item item = it.current();
+//     it.next();
+// }
+
+void the_most_popular_factory_method()
+{
+    std::list<int> vec = {1, 2, 3};
+
+    for(const auto& item : vec)
+    {
+        std::cout << item << "\n";
+    }
+
+    for(auto it = vec.begin(); it != vec.end(); ++it)
+    {
+        const auto& item = *it;
+    }
+}
 
 int main()
 {
     using namespace ModernCpp;
-    
+
     MusicServiceFactory music_service_factory;
     music_service_factory.emplace("Tidal", TidalServiceCreator("tidal_user", "KJH8324d&df"));
     music_service_factory.emplace("Spotify", SpotifyServiceCreator("spotify_user", "rjdaslf276%2", 45));
