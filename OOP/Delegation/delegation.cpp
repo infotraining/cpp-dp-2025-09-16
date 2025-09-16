@@ -149,6 +149,16 @@ void use_inheritance()
     left_aligned.render(80);
     right_aligned.render(80);
     center_aligned.render(80);
+
+    std::cout << "\nDoc:\n";
+
+    std::vector<std::unique_ptr<TextParagraph>> doc;
+    doc.push_back(std::make_unique<TextParagraph>("One", Color{128, 128, 128}));
+    doc.push_back(std::make_unique<RightAlignedTextParagraph>("Two", Color{128, 128, 128}));
+    doc.push_back(std::make_unique<CenteredAlignedTextParagraph>("Three", Color{128, 128, 248}));
+
+    for(const auto& p : doc)
+        p->render(80);
 }
 
 void use_delegation()
@@ -171,5 +181,5 @@ int main()
 
     std::cout << "\n-----------------\n\n";
 
-    use_delegation();
+    //use_delegation();
 }

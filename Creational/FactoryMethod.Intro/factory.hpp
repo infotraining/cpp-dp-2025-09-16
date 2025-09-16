@@ -63,6 +63,25 @@ public:
     }
 };
 
+class YouTubeMusicService : public MusicService
+{
+    bool ads_enabled_;
+public:
+    YouTubeMusicService(const std::string& user_name, const std::string& secret, bool ads_enabled = true)
+    {
+        std::cout << "Creating YouTubeMusicService...\n";
+        ads_enabled_ = ads_enabled;
+    }
+
+    std::optional<Track> get_track(const std::string& title) override
+    {
+        if (ads_enabled_)
+            std::cout << "Playing ads...\n";
+
+        return Track(title.begin(), title.end());
+    }
+};
+
 // "Creator"
 class MusicServiceCreator
 {
@@ -124,6 +143,23 @@ public:
     std::unique_ptr<MusicService> create_music_service() override
     {
         return std::make_unique<FilesystemMusicService>(path_);
+    }
+};
+
+class YouTubeMusicServiceCreator : public MusicServiceCreator
+{
+    std::string user_name_;
+    std::string secret_;
+    bool ads_enabled_;
+public:
+    YouTubeMusicServiceCreator(const std::string& user_name, const std::string& secret, bool ads_enabled = true)
+        : user_name_{user_name}, secret_{secret}, ads_enabled_{ads_enabled}
+    {
+    }
+
+    std::unique_ptr<MusicService> create_music_service() override
+    {
+        return std::make_unique<YouTubeMusicService>(user_name_, secret_, ads_enabled_);
     }
 };
 
