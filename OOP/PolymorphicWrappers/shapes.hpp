@@ -12,6 +12,12 @@ namespace PolymorphicWrappers
     // Polymorphic wrapper for shapes   
     ////////////////////////////////////////////////////////////
 
+    template <typename T>
+    concept ShapeLike = requires(T shape, int x, int y) {
+        shape.draw();
+        shape.move(x, y);
+    };
+
     class Shape
     {
         // shape interface - implementation detail
@@ -24,7 +30,7 @@ namespace PolymorphicWrappers
             virtual std::unique_ptr<IShape> clone() = 0;
         };
 
-        template <typename T>
+        template <ShapeLike T>
         class ShapeWrapper : public IShape
         {
             T shape_;
@@ -57,7 +63,7 @@ namespace PolymorphicWrappers
         };
 
     public:
-        template <typename T, typename = std::enable_if_t<!std::is_same_v<std::decay_t<T>, Shape>>>
+        template <ShapeLike T, typename = std::enable_if_t<!std::is_same_v<std::decay_t<T>, Shape>>>
         Shape(T&& shp)
             : shape_(std::make_unique<ShapeWrapper<std::decay_t<T>>>(std::forward<T>(shp)))
         {
@@ -76,7 +82,7 @@ namespace PolymorphicWrappers
             return *this;
         }
 
-        template <class T>
+        template <ShapeLike T>
         Shape& operator=(T&& src)
         {
             Shape(std::forward<T>(src)).swap(*this);
