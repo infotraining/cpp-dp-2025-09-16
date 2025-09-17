@@ -6,12 +6,28 @@ using namespace std;
 using namespace Drawing;
 using namespace IO;
 
-// TODO - register creator for a TextReaderWriter class
-
-void TextReaderWriter::read(Shape& shp, istream& in)
+namespace
 {
+    bool is_registered = SingletonShapeRWFactory::instance()
+                             .register_creator(make_type_index<Text>(), [] { return make_unique<TextReaderWriter>(); });
+}
+
+void Drawing::IO::TextReaderWriter::read(Drawing::Shape& shp, std::istream& in)
+{
+    Text& text_paragraph = static_cast<Text&>(shp);
+
+    Point pt;
+    std::string str;
+
+    in >> pt >> str;
+
+    text_paragraph.set_coord(pt);
+    text_paragraph.set_content(str.c_str());
 }
 
 void TextReaderWriter::write(const Shape& shp, ostream& out)
 {
+    const Text& text = static_cast<const Text&>(shp);
+
+    out << Text::id << " " << text.coord() << " " << text.content() << "\n";
 }
