@@ -92,8 +92,8 @@ int main()
 
     doc.render();
 
-    // TODO: Uncomment this code
-    // GraphicsDoc doc2 = doc;
+    //TODO: Uncomment this code
+    GraphicsDoc doc2 = doc;
 
-    // doc2.save("new_drawing.txt");
+    doc2.save("new_drawing.txt");
 }
