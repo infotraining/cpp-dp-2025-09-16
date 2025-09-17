@@ -15,6 +15,29 @@ namespace Game
         virtual ~EnemyFactory() = default;
     };
 
+    // class EnemyCloneFactory : public EnemyFactory
+    // {
+    //     std::unique_ptr<Enemy> soldier_proto_;
+    //     std::unique_ptr<Enemy> monster_proto_;
+    //     std::unique_ptr<Enemy> super_monster_proto_;
+
+    // public:
+    //     std::unique_ptr<Enemy> CreateSoldier() override
+    //     {
+    //         return soldier_proto_->clone();
+    //     }
+
+    //     std::unique_ptr<Enemy> CreateMonster() override
+    //     {
+    //         return monster_proto_->clone();
+    //     }
+
+    //     std::unique_ptr<Enemy> CreateSuperMonster() override
+    //     {
+    //         return super_monster_proto_->clone();
+    //     }
+    // };
+
     class EasyLevelEnemyFactory : public EnemyFactory
     {
     public:

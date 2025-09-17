@@ -1,5 +1,6 @@
 #include "report_builder.hpp"
 #include "data_parser.hpp"
+#include "person_builder.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -27,17 +28,43 @@ CsvDocument build_csv_document()
     return csv_builder.get_report();
 }
 
+void person_builder_demo()
+{
+    Person p = Person::create("Jan", "Kowalski")
+        .lives()
+            .at("Nigdzie")
+            .in("Nibylandia")
+            .with_postal_code("00-110")
+        .works()
+            .in_company("Zeiss")
+            .with_tax_id("PL534714576");
+}
+
 int main()
 {
     HtmlDocument doc_html = build_html_document();
 
     cout << doc_html << endl;
 
-    ///////////////////////////////////////////////////////////
     cout << "///////////////////////////////////////////////////////////\n";
 
     CsvDocument csv_doc = build_csv_document();
 
     for (const auto& line : csv_doc)
         cout << line << endl;
+
+    cout << "///////////////////////////////////////////////////////////\n";
+
+    HtmlReportBuilder html_bld;
+
+    html_bld
+        .add_header("TITLE")
+        .begin_data()
+            .add_row({"one", "two", "three"})
+            .add_row({"four", "five", "six"})
+        .end_data()
+        .add_footer("THE END");
+
+    std::cout << html_bld.get_report() << "\n";
+
 }
