@@ -13,6 +13,7 @@ namespace Drawing
         virtual ~Shape() = default;
         virtual void move(int x, int y) = 0;
         virtual void draw() const = 0;
+        virtual std::unique_ptr<Shape> clone() const = 0;
     };
 
     class ShapeBase : public Shape
@@ -24,7 +25,7 @@ namespace Drawing
             return coord_;
         }
 
-        void set_coord(const Point& pt)
+        void set_coord(const Point &pt)
         {
             coord_ = pt;
         }
@@ -37,6 +38,18 @@ namespace Drawing
         void move(int dx, int dy) override
         {
             coord_.translate(dx, dy);
+        }
+    };
+
+    template <typename TShape, typename TShapeBase = ShapeBase>
+    class CloneableShape : public TShapeBase
+    {
+    public:
+        using TShapeBase::TShapeBase; // inheritance of all constructors from TShapeBase
+
+        std::unique_ptr<Shape> clone() const override
+        {
+            return std::make_unique<TShape>(static_cast<const TShape &>(*this));
         }
     };
 } // namespace Drawing
