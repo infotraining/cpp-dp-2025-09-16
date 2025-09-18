@@ -4,14 +4,14 @@
 #include <iostream>
 #include <string>
 
-class Observer
-{
-public:
-    virtual void update(/*...*/) = 0;
-    virtual ~Observer()
-    {
-    }
-};
+// class Observer
+// {
+// public:
+//     virtual void update(/*...*/) = 0;
+//     virtual ~Observer()
+//     {
+//     }
+// };
 
 // Subject
 class Stock
@@ -47,7 +47,7 @@ public:
     }
 };
 
-class Investor : public Observer
+class Investor// : public Observer
 {
     std::string name_;
 

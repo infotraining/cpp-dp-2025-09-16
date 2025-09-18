@@ -39,7 +39,6 @@ enum class TurnstileState
 
 namespace Before
 {
-
     class Turnstile
     {
         TurnstileState state_;
