@@ -27,7 +27,10 @@ int main()
     using namespace std::literals;
     auto image_filenames = {"drawing1.drw"s, "drawing2.drw"s, "drawing3.drw"s};
 
-    ClientApplication c{image_filenames, &std::make_unique<LazyBitmap, std::string>};
+    auto real_image_factory = [](const std::string& filename) { return std::make_unique<Bitmap>(filename); };
+    auto proxy_image_factory = [](const std::string& filename) { return std::make_unique<LazyBitmap>(filename); };
+
+    ClientApplication c{image_filenames, proxy_image_factory};
 
     c.render(0);
     c.render(1);

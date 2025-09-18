@@ -13,27 +13,25 @@ class Product;
 class CarBuilder
 {
 public:
+    CarBuilder() = default;
+    virtual ~CarBuilder() = default;
+
+    // Template Method
+    void construct()
+    {
+        reset();
+        build_engine();
+        build_gearbox();
+        build_aircondition();
+        build_wheels();
+    }
+
+protected:
     virtual void reset() = 0;
     virtual void build_engine() = 0;
     virtual void build_gearbox() = 0;
     virtual void build_aircondition() = 0;
     virtual void build_wheels() = 0;
-    virtual ~CarBuilder() = default;
-};
-
-// "Director"
-class Director
-{
-public:
-    virtual void construct(CarBuilder& builder)
-    {
-        builder.reset();
-        builder.build_engine();
-        builder.build_gearbox();
-        builder.build_aircondition();
-        builder.build_wheels();
-    }
-    virtual ~Director() = default;
 };
 
 // "Product"
@@ -42,7 +40,7 @@ class Car
     std::vector<std::string> parts_;
 
 public:
-    void add(const std::string& part)
+    void add(const std::string &part)
     {
         parts_.push_back(part);
     }
@@ -53,7 +51,7 @@ public:
 
         std::string description = "Car consists of:\n";
 
-        for (const auto& part : parts_)
+        for (const auto &part : parts_)
             description += " + "s + part + "\n"s;
 
         return description;
@@ -63,14 +61,20 @@ public:
 // "ConcreteBuilder1"
 class EconomyCarBuilder : public CarBuilder
 {
-private:
-    Car car_;
-
 public:
     EconomyCarBuilder()
     {
     }
 
+    Car get_result()
+    {
+        return std::move(car_);
+    }
+
+private:
+    Car car_;
+
+protected:
     void reset() override
     {
         car_ = Car{};
@@ -95,24 +99,25 @@ public:
         for (int i = 0; i < 4; ++i)
             car_.add("Wheel 16 inches - Regular tires");
     }
-
-    Car get_result()
-    {
-        return std::move(car_);
-    }
 };
 
 // "ConcreteBuilder2"
 class PremiumCarBuilder : public CarBuilder
 {
-private:
-    Car car_;
-
 public:
     PremiumCarBuilder()
     {
     }
 
+    Car get_result()
+    {
+        return std::move(car_);
+    }
+
+private:
+    Car car_;
+
+protected:
     void reset() override
     {
         car_ = Car{};
@@ -137,11 +142,6 @@ public:
     {
         for (int i = 0; i < 4; ++i)
             car_.add("Wheel 20 inches - Sport tires");
-    }
-
-    Car get_result()
-    {
-        return std::move(car_);
     }
 };
 
