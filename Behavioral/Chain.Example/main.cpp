@@ -13,7 +13,7 @@ struct Fan
     uint8_t speed_{};
 
 public:
-    Fan(std::string name)
+    explicit Fan(std::string name)
         : name_{std::move(name)}
     { }
 
@@ -51,6 +51,8 @@ struct Heater
     bool is_on_{};
 
 public:
+    Heater() = default;
+
     void on()
     {
         cout << "Heater is on\n";

@@ -36,3 +36,4 @@ private:
 };
 
 #endif /*OBSERVER_HPP_*/
+
