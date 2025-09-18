@@ -182,7 +182,7 @@ int main()
     device.add_handler(/*[](Temperature temperature) { return temperature >= 22.5 && temperature < 25; },*/
         And(Ge(22.5), Lt(25.0)),
         [&](Temperature temperature) {
-            set_fan_speed(fan_1, 5)();
+            set_fan_speed(fan_1, 5)();  
             turn_off_fan_2();
         });
 
